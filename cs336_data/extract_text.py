@@ -11,12 +11,11 @@ IP_PATTERN = r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0
 
 def extract(text):
     encoding_type = encoding.detect_encoding(text)
-    print(encoding_type)
-    decoded = text.decode(encoding_type)
+    decoded = text.decode(encoding_type, errors='replace')
     return extract_plain_text(decoded)
 
 
-def identify_language(text, model_path = 'models/lid.176.bin'):
+def identify_language(text, model_path = '/data/classifiers/lid.176.bin'):
     model = fasttext.load_model(model_path)
     language, confidence = model.predict(text.replace('\n', ""))
     return language[0].split('__')[-1], confidence[0]
@@ -33,12 +32,12 @@ def mask_ip(text):
     num_ips = len(re.findall(IP_PATTERN, text))
     return re.sub(IP_PATTERN, '|||IP_ADDRESS|||', text), num_ips
 
-def NSFW(text, model_path = 'models/jigsaw_fasttext_bigrams_nsfw_final.bin'):
+def NSFW(text, model_path = '/data/classifiers/dolma_fasttext_nsfw_jigsaw_model.bin'):
     model = fasttext.load_model(model_path)
     classification, confidence=  model.predict(text.replace('\n', ""))
     return classification[0].split('_')[-1], confidence[0]
 
-def hate_speech(text, model_path = 'models/jigsaw_fasttext_bigrams_hatespeech_final.bin'):
+def hate_speech(text, model_path = '/data/classifiers/dolma_fasttext_hatespeech_jigsaw_model.bin'):
     model = fasttext.load_model(model_path)
     classification, confidence=  model.predict(text.replace('\n', ""))
     return classification[0].split('_')[-1], confidence[0]
