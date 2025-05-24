@@ -27,7 +27,7 @@ def main():
     func = iterator()
     functions = [func for i in range(10)]
     queue = Queue(maxsize = 10)
-    p = Process(target = producer, args = (queue)
+    p = Process(target = producer, args = (queue))
     with Pool(10) as p:
         p.map(print_it, functions)
 
